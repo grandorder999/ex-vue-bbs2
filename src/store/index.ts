@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 import { Article } from "@/types/article";
-import { Comment } from "@/types/comment";
+// import { Comment } from "@/types/comment";
 
 Vue.use(Vuex);
 
@@ -18,7 +18,7 @@ export default new Vuex.Store({
       );
       console.dir("responce" + JSON.stringify(responce));
       const payload = responce.data;
-      context.commit("ddArticle", payload);
+      context.commit("addArticle", payload);
     },
   },
   mutations: {
@@ -30,9 +30,27 @@ export default new Vuex.Store({
     addArticle(state, payload) {
       // payloadのarticleをunshiftメソッドを使って0番目に追加する
       // 0番目に追加するときはunshift、最後尾に追加するときはpush
-      state.articles.unshift(payload.article);
+      state.articles = new Array<Article>();
+      for (const article of payload.articles) {
+        state.articles.unshift(
+          new Article(
+            article.id,
+            article.name,
+            article.content,
+            article.commentList
+          )
+        );
+      }
     },
   },
-  getters: {},
+  getters: {
+    /**
+     * 記事一覧を返す.
+     * @param state - ステート
+     */
+    getArticles(state) {
+      return state.articles;
+    },
+  },
   modules: {},
 });

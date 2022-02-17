@@ -2,22 +2,18 @@
   <div class="container">
     <div id="app">掲示板画面</div>
 
-    <div class="articleNameErrorMessage">{{ articleNameErrorMessage }}</div>
     <div>投稿者名：<input type="text" v-model="articleName" /></div>
-    <div class="articleContentErrorMessage">
-      {{ articleContentErrorMessage }}
-    </div>
     <div>
       投稿内容：<textarea
         name="textarea"
         cols="30"
         rows="5"
         v-model="articleContent"
-      ></textarea>
+      >
+      </textarea>
     </div>
     <button type="button" v-on:click="addArticle">記事投稿</button><br />
     <hr />
-
     <div
       v-for="(article, articleIndex) of currentArticleList"
       v-bind:key="article.id"
@@ -40,7 +36,6 @@
         </div>
       </div>
 
-      <CompComment v-bind:article-id="article.id"></CompComment>
       <hr />
     </div>
   </div>
@@ -49,6 +44,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Article } from "@/types/article";
+import axios from "axios";
 @Component
 export default class XXXComponent extends Vue {
   // 現在の記事一覧
@@ -57,10 +53,34 @@ export default class XXXComponent extends Vue {
   private articleName = "";
   // 投稿内容
   private articleContent = "";
-  // 投稿者名のエラー
-  private articleNameErrorMessage = "";
-  // 投稿内容のエラー
-  private articleContentErrorMessage = "";
+  // エラーメッセージ
+  private errorMessage = "";
+
+  /**
+   * Vuexストア内のアクション経由で記事一覧を取得し表示する.
+   */
+  async created(): Promise<void> {
+    await this.$store.dispatch("getArticle");
+    this.currentArticleList = this.$store.getters.getArticles;
+  }
+
+  /**
+   * 記事を追加する.
+   */
+  async addArticle(): Promise<void> {
+    const responce = await axios.post(
+      "http://153.127.48.168:8080/ex-bbs-api/bbs/article",
+      { name: this.articleName, content: this.articleContent }
+    );
+    console.dir("responce:" + JSON.stringify(responce));
+    if (responce.status !== 200) {
+      this.errorMessage = "投稿できませんでした";
+      return;
+    }
+    // 入力値をフォームからクリアする
+    this.articleName = "";
+    this.articleContent = "";
+  }
 }
 </script>
 
