@@ -36,6 +36,7 @@
         </div>
       </div>
 
+      <CompComment v-bind:article-id="article.id"></CompComment>
       <hr />
     </div>
   </div>
@@ -45,7 +46,12 @@
 import { Component, Vue } from "vue-property-decorator";
 import { Article } from "@/types/article";
 import axios from "axios";
-@Component
+import CompComment from "@/components/CompComment.vue";
+@Component({
+  components: {
+    CompComment,
+  },
+})
 export default class XXXComponent extends Vue {
   // 現在の記事一覧
   private currentArticleList = new Array<Article>();

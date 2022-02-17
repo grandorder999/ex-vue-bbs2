@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 import { Article } from "@/types/article";
-// import { Comment } from "@/types/comment";
+import { Comment } from "@/types/comment";
 
 Vue.use(Vuex);
 
@@ -20,7 +20,7 @@ export default new Vuex.Store({
       const payload = responce.data;
       context.commit("addArticle", payload);
     },
-  },
+  }, // end actions
   mutations: {
     /**
      * 記事を追加する.
@@ -28,8 +28,6 @@ export default new Vuex.Store({
      * @param payload - 記事情報
      */
     addArticle(state, payload) {
-      // payloadのarticleをunshiftメソッドを使って0番目に追加する
-      // 0番目に追加するときはunshift、最後尾に追加するときはpush
       state.articles = new Array<Article>();
       for (const article of payload.articles) {
         state.articles.unshift(
@@ -42,7 +40,30 @@ export default new Vuex.Store({
         );
       }
     },
-  },
+    /**
+     * コメントを追加する.
+     * @param state - ステート
+     * @param payload - コメント情報
+     */
+    addComment(state, payload) {
+      // 渡されたpayloadの中のarticleIdから追加対象の記事を検索する
+      const article = state.articles.find(
+        (article) => article.id === payload.comment.articleId
+      );
+      // 記事が存在していたらCommentListにコメントを追加する
+      if (article) {
+        // 渡されたpayloadからCommentオブジェクトを生成
+        const comment = new Comment(
+          payload.comment.id,
+          payload.comment.name,
+          payload.comment.content,
+          payload.comment.articleId
+        );
+        // commentListにコメントをcommentを追加する
+        article.commentList.unshift(comment);
+      }
+    },
+  }, // end mutations
   getters: {
     /**
      * 記事一覧を返す.
