@@ -73,6 +73,7 @@ export default class XXXComponent extends Vue {
       { name: this.articleName, content: this.articleContent }
     );
     console.dir("responce:" + JSON.stringify(responce));
+    // 今回はsuccessではなく200だったら投稿可能という意味になる
     if (responce.status !== 200) {
       this.errorMessage = "投稿できませんでした";
       return;
