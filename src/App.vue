@@ -3,5 +3,9 @@
     <router-view />
   </div>
 </template>
-<script></script>
+<script>
+export default {
+  name: "app",
+};
+</script>
 <style></style>
