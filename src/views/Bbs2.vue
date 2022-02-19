@@ -14,17 +14,14 @@
     </div>
     <button type="button" v-on:click="addArticle">記事投稿</button><br />
     <hr />
-    <div
-      v-for="(article, articleIndex) of currentArticleList"
-      v-bind:key="article.id"
-    >
+    <div v-for="article of currentArticleList" v-bind:key="article.id">
       <div>投稿者名：{{ article.name }}</div>
       <div>
         投稿内容：
         <pre>{{ article.content }}</pre>
       </div>
 
-      <button type="button" v-on:click="deleteArticle(articleIndex)">
+      <button type="button" v-on:click="deleteArticle(article.id)">
         記事削除</button
       ><br />
 
@@ -91,10 +88,13 @@ export default class XXXComponent extends Vue {
   /**
    * 記事を削除する.
    * @param articleIndex - 記事のIndex番号
+   * @returns Promise<void> - プロミスオブジェクト
    */
-  deleteArticle(articleIndex: number): void {
-    // ミューテーションのdeleteArticleを呼ぶ
-    this.$store.commit("deleteArticle", { index: articleIndex });
+  async deleteArticle(articleId: number): Promise<void> {
+    const responce2 = await axios.delete(
+      "http://153.127.48.168:8080/ex-bbs-api/bbs/article/" + articleId
+    );
+    console.dir("responce:" + JSON.stringify(responce2));
   }
 }
 </script>
