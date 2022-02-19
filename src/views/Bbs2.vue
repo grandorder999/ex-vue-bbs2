@@ -88,6 +88,14 @@ export default class XXXComponent extends Vue {
     this.articleName = "";
     this.articleContent = "";
   }
+  /**
+   * 記事を削除する.
+   * @param articleIndex - 記事のIndex番号
+   */
+  deleteArticle(articleIndex: number): void {
+    // ミューテーションのdeleteArticleを呼ぶ
+    this.$store.commit("deleteArticle", { index: articleIndex });
+  }
 }
 </script>
 
